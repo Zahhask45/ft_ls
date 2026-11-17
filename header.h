@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct s_instruct
 {
@@ -17,6 +18,7 @@ typedef struct s_files
 {
 	char *folder;
 	struct s_files *next;
+	int		to_print;
 }	t_files;
 
 #endif
