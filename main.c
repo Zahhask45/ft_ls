@@ -20,15 +20,15 @@ char	*alocpy(char *str)
 	return (toret);
 }
 
-void	swap_nodes(t_files **node1, t_files **node2)
+void	swap_nodes(t_files *node1, t_files *node2)
 {
 	t_files *temp;
 
-	if (!node1 && !node2)
+	if (!node1 || !node2)
 		return ;
-	temp = *node1;
-	*node1 = *node2;
-	*node2 = temp;
+	temp->folder = node1->folder;
+	node1->folder = node2->folder;
+	node2->folder = temp->folder;
 }
 
 void	print_ls(t_files *folders)
@@ -44,6 +44,7 @@ void	print_ls(t_files *folders)
 			printf("  ");
 		temp = temp->next;
 	}
+	printf("\n");
 }
 
 void	sort_list(t_files *folders)
@@ -58,9 +59,9 @@ void	sort_list(t_files *folders)
 		{
 			if (strcmp(folders->folder, folders->next->folder) > 0)
 			{
-				printf("%d\n", strcmp(folders->folder, folders->next->folder));
-				printf("%s || %s\n", folders->folder, folders->next->folder);
-				swap_nodes(&folders, &folders->next);
+				//printf("%d\n", strcmp(folders->folder, folders->next->folder));
+				//printf("%s || %s\n", folders->folder, folders->next->folder);
+				swap_nodes(folders, folders->next);
 				folders = start;
 			}
 			else
@@ -92,13 +93,13 @@ void	simple_ls()
 	struct dirent *de;
 	DIR *dir;
 	t_files *folders;
-	t_files *temp;
+	t_files *head;
 
 	dir = opendir(".");
 	de = readdir(dir);
 	if (de)
 		folders = add_node(de->d_name);
-	temp = folders;
+	head = folders;
 	while (de)
 	{	
 		de = readdir(dir);
@@ -108,18 +109,16 @@ void	simple_ls()
 			folders = folders->next;
 		}
 	}
-	folders = temp;
+	folders = head;
 	sort_list(folders);
-	print_ls(temp);
+	print_ls(head);
 	closedir(dir);
 }
 
 int main(int ac, char **av)
 {
 	if (ac > 1)
-	{
 		return (0);
-	}
 	else
 		simple_ls();
 	return (0);
