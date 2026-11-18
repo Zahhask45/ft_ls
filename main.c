@@ -27,8 +27,8 @@ void	swap_nodes(t_files **node1, t_files **node2)
 	if (!node1 && !node2)
 		return ;
 	temp = *node1;
-	node1 = node2;
-	node2 = &temp;
+	*node1 = *node2;
+	*node2 = temp;
 }
 
 void	print_ls(t_files *folders)
