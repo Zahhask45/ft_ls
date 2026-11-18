@@ -20,15 +20,15 @@ char	*alocpy(char *str)
 	return (toret);
 }
 
-void	swap_nodes(t_files *node1, t_files *node2)
+void	swap_nodes(t_files **node1, t_files **node2)
 {
 	t_files *temp;
 
-	if (node1 != NULL && node2 != NULL)
+	if (!node1 && !node2)
 		return ;
-	temp = node1;
+	temp = *node1;
 	node1 = node2;
-	node2 = temp;
+	node2 = &temp;
 }
 
 void	print_ls(t_files *folders)
@@ -56,9 +56,11 @@ void	sort_list(t_files *folders)
 	{
 		if (folders->next)
 		{
-			if (strcmp(folders->folder, folders->next->folder) < 0)
+			if (strcmp(folders->folder, folders->next->folder) > 0)
 			{
-				swap_nodes(folders, folders->next);
+				printf("%d\n", strcmp(folders->folder, folders->next->folder));
+				printf("%s || %s\n", folders->folder, folders->next->folder);
+				swap_nodes(&folders, &folders->next);
 				folders = start;
 			}
 			else
