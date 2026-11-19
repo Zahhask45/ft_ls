@@ -24,11 +24,16 @@ void	swap_nodes(t_files *node1, t_files *node2)
 {
 	t_files *temp;
 
+	temp = calloc(1, sizeof(t_files));
 	if (!node1 || !node2)
 		return ;
 	temp->folder = node1->folder;
+	temp->to_print = node1->to_print;
 	node1->folder = node2->folder;
+	node1->to_print = node2->to_print;
 	node2->folder = temp->folder;
+	node2->to_print = temp->to_print;
+	free(temp);
 }
 
 void	print_ls(t_files *folders)
@@ -47,6 +52,22 @@ void	print_ls(t_files *folders)
 	printf("\n");
 }
 
+int	check_alpha(char *str1, char *str2)
+{
+	int i;
+
+	i = 0;
+	while (str1[i] && str2[i])
+	{
+		if (toupper(str1[i]) < toupper(str2[i]))
+			return (0);
+		else if (toupper(str1[i]) > toupper(str2[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	sort_list(t_files *folders)
 {
 	t_files *temp;
@@ -57,10 +78,8 @@ void	sort_list(t_files *folders)
 	{
 		if (folders->next)
 		{
-			if (strcmp(folders->folder, folders->next->folder) > 0)
+			if (check_alpha(folders->folder, folders->next->folder))
 			{
-				//printf("%d\n", strcmp(folders->folder, folders->next->folder));
-				//printf("%s || %s\n", folders->folder, folders->next->folder);
 				swap_nodes(folders, folders->next);
 				folders = start;
 			}
@@ -88,6 +107,19 @@ t_files	*add_node(char *file_name)
 	return (new_node);
 }
 
+void	free_list(t_files *folders)
+{
+	t_files *temp;
+
+	while (folders)
+	{
+		free(folders->folder);
+		temp = folders;
+		folders = folders->next;
+		free(temp);
+	}
+}
+
 void	simple_ls()
 {
 	struct dirent *de;
@@ -113,6 +145,7 @@ void	simple_ls()
 	sort_list(folders);
 	print_ls(head);
 	closedir(dir);
+	free_list(head);
 }
 
 int main(int ac, char **av)
